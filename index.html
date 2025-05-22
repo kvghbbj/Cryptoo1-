@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Crypto Narxlari - Qalam Usulida</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap');
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background-color: #0a0a0a;
+      color: #cce6ff;
+      font-family: 'Montserrat', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 50px 20px;
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    /* Orqa fon uchun line art effect */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background:
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/46/Bitcoin.svg/256px-Bitcoin.svg.png') no-repeat 10% 20% / 8%,
+        url('https://upload.wikimedia.org/wikipedia/commons/thumb/0/05/Ethereum_logo_2014.svg/240px-Ethereum_logo_2014.svg.png') no-repeat 30% 50% / 8%,
+        url('https://cryptologos.cc/logos/binance-coin-bnb-logo.svg?v=014') no-repeat 60% 25% / 8%,
+        url('https://cryptologos.cc/logos/cardano-ada-logo.svg?v=014') no-repeat 80% 60% / 8%;
+      opacity: 0.12;
+      filter: grayscale(100%) brightness(160%) contrast(130%) drop-shadow(0 0 4px #33aaff);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    h1 {
+      font-size: 40px;
+      font-weight: 700;
+      margin-bottom: 40px;
+      letter-spacing: 8px;
+      text-shadow: 0 0 8px #3399ffcc;
+      user-select: none;
+      z-index: 1;
+    }
+
+    .crypto-list {
+      width: 350px;
+      background: rgba(20, 25, 35, 0.85);
+      border-radius: 16px;
+      box-shadow: 0 0 40px #1f4dbb88;
+      padding: 24px 0;
+      backdrop-filter: blur(14px);
+      z-index: 1;
+      position: relative;
+    }
+
+    .crypto-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 28px;
+      border-bottom: 1px solid rgba(70, 120, 255, 0.15);
+      transition: background-color 0.3s ease;
+      user-select: none;
+    }
+
+    .crypto-item:last-child {
+      border-bottom: none;
+    }
+
+    .crypto-item:hover {
+      background: rgba(50, 90, 200, 0.3);
+      box-shadow: 0 0 10px #3399ffaa;
+    }
+
+    .crypto-left {
+      display: flex;
+      align-items: center;
+    }
+
+    .crypto-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 18px;
+      background: white;
+      padding: 5px;
+      box-shadow: 0 0 10px #3399ffaa;
+      filter: drop-shadow(0 0 3px #66b3ff);
+    }
+
+    .crypto-name {
+      font-size: 20px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      text-shadow: 0 0 8px #33aaffbb;
+    }
+
+    .crypto-price {
+      font-size: 18px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      color: #66ccff;
+    }
+
+    .pulse {
+      width: 10px;
+      height: 10px;
+      background: #33aaff;
+      border-radius: 50%;
+      margin-right: 8px;
+      animation: pulse 1.6s infinite;
+      box-shadow: 0 0 8px #33aaff88;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.6); opacity: 0.5; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>CRYPTO</h1>
+
+  <div class="crypto-list" id="cryptoList"></div>
+
+  <script>
+    const cryptos = [
+      { id: "bitcoin", name: "Bitcoin", logo: "https://assets.coingecko.com/coins/images/1/thumb/bitcoin.png" },
+      { id: "ethereum", name: "Ethereum", logo: "https://assets.coingecko.com/coins/images/279/thumb/ethereum.png" },
+      { id: "binancecoin", name: "Binance Coin", logo: "https://assets.coingecko.com/coins/images/825/thumb/binance-coin-logo.png" },
+      { id: "cardano", name: "Cardano", logo: "https://assets.coingecko.com/coins/images/975/thumb/cardano.png" },
+      { id: "solana", name: "Solana", logo: "https://assets.coingecko.com/coins/images/4128/thumb/solana.png" },
+      { id: "dogecoin", name: "Dogecoin", logo: "https://assets.coingecko.com/coins/images/5/thumb/dogecoin.png" },
+      { id: "ripple", name: "Ripple", logo: "https://assets.coingecko.com/coins/images/44/thumb/xrp-symbol-white-128.png" },
+      { id: "polkadot", name: "Polkadot", logo: "https://assets.coingecko.com/coins/images/12171/thumb/polkadot.png" }
+    ];
+
+    const listContainer = document.getElementById("cryptoList");
+
+    function createCryptoItem(coin, price = "...") {
+      const item = document.createElement("div");
+      item.className = "crypto-item";
+
+      const left = document.createElement("div");
+      left.className = "crypto-left";
+
+      const img = document.createElement("img");
+      img.src = coin.logo;
+      img.alt = coin.name;
+      img.className = "crypto-logo";
+
+      const name = document.createElement("div");
+      name.className = "crypto-name";
+      name.textContent = coin.name;
+
+      left.appendChild(img);
+      left.appendChild(name);
+
+      const priceBox = document.createElement("div");
+      priceBox.className = "crypto-price";
+
+      const pulse = document.createElement("div");
+      pulse.className = "pulse";
+
+      const priceText = document.createElement("span");
+      priceText.textContent = price;
+
+      priceBox.appendChild(pulse);
+      priceBox.appendChild(priceText);
+
+      item.appendChild(left);
+      item.appendChild(priceBox);
+
+      return { item, priceText };
+    }
+
+    const coinElements = {};
+
+    cryptos.forEach(coin => {
+      const { item, priceText } = createCryptoItem(coin);
+      listContainer.appendChild(item);
+      coinElements[coin.id] = priceText;
+    });
+
+    async function updatePrices() {
+      try {
+        const ids = cryptos.map(c => c.id).join(",");
+        const res = await fetch(`https://api.coingecko.com/api/v3/simple/price?ids=${ids}&vs_currencies=usd`);
+        const data = await res.json();
+
+        for (let id in data) {
+          const price = data[id].usd.toLocaleString("en-US", {
+            style: "currency",
+            currency: "USD",
+            minimumFractionDigits: 2
+          });
+          if (coinElements[id]) {
+            coinElements[id].textContent = price;
+          }
+        }
+      } catch (err) {
+        console.error("Narxlarni olishda xatolik:", err);
+      }
+    }
+
+    updatePrices();
+    setInterval(updatePrices, 10000);
+  </script>
+
+</body>
+</html>
